@@ -6,6 +6,8 @@ dotenv.config();
 
 const app = express();
 
+let password = "123456";
+
 // CORS
 app.use(
   cors({
@@ -16,13 +18,24 @@ app.use(
 // To parse JSON
 app.use(express.json());
 
+// Custom Middleware
+app.use((req, res, next) => {
+  if (req.method === "GET") {
+    return next(); // allow GET without password
+  }
+  if (req.body.password == password) {
+    next();
+  } else {
+    res.status(401).send("Unauthorized");
+  }
+});
+
 app.get("/", (req, res) => {
   res.json({ name: "Ashim", age: 19, skills: "MERN" });
 });
 
 app.post("/", (req, res) => {
-  console.log(req.body);
-  res.send({ success: true, data: req.body });
+  res.send(req.body);
 });
 
 app.listen(process.env.PORT || 3000, () => {

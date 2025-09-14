@@ -91,6 +91,7 @@ const App = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [age, setAge] = useState("");
+  const [password, setPassword] = useState("");
 ```
 
 - **Functional Component**: Modern React component syntax
@@ -105,9 +106,9 @@ const getRes = async () => {
   axios
     .get("http://localhost:8000")  // Note: Should be 3000
     .then((e) => {
-      console.log(`Name: ${e.data.name}`);
-      console.log(`Age: ${e.data.age}`);
-      console.log(`Skills: ${e.data.skills}`);
+      console.log(`Name  ${e.data.name}`);
+      console.log(`Age  ${e.data.age}`);
+      console.log(`Skills  ${e.data.skills}`);
     })
     .catch((e) => {
       console.log(e);

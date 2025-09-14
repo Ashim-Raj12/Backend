@@ -93,6 +93,25 @@ app.use(express.json());
 - Parses incoming JSON data
 - Makes `req.body` available in POST requests
 
+#### Custom Authentication Middleware
+```javascript
+app.use((req, res, next) => {
+  if (req.method === "GET") {
+    return next(); // allow GET without password
+  }
+  if (req.body.password == password) {
+    next();
+  } else {
+    res.status(401).send("Unauthorized");
+  }
+});
+```
+
+- Checks if the request method is GET; if so, allows it without authentication
+- For other methods (like POST), verifies the password in the request body
+- If password matches "123456", proceeds to the route handler
+- If not, sends a 401 Unauthorized response
+
 ### 5. Routes
 
 #### GET Route
@@ -109,15 +128,14 @@ app.get("/", (req, res) => {
 #### POST Route
 ```javascript
 app.post("/", (req, res) => {
-  console.log(req.body);
-  res.send({ success: true, data: req.body });
+  res.send(req.body);
 });
 ```
 
 - **Route**: `"/"` (same path as GET)
 - **Method**: POST (for sending data)
-- **Request Body**: Contains data sent from frontend
-- **Response**: Confirms success and echoes data
+- **Request Body**: Contains data sent from frontend including password for authentication
+- **Response**: Echoes back the received data
 
 ### 6. Starting the Server
 ```javascript

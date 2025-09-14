@@ -5,6 +5,7 @@ const App = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [age, setAge] = useState("");
+  const [password, setPassword] = useState("");
 
   const getRes = async () => {
     // const res = await fetch("http://localhost:8000");
@@ -12,7 +13,7 @@ const App = () => {
     // console.log(data);
 
     axios
-      .get("http://localhost:8000")
+      .get("http://localhost:8000" || "http://localhost:3000")
       .then((e) => {
         console.log(`Name  ${e.data.name}`);
         console.log(`Age  ${e.data.age}`);
@@ -29,12 +30,14 @@ const App = () => {
         userName,
         email,
         age,
+        password,
       })
       .then((e) => {
         console.log(e.data);
         setUserName("");
         setEmail("");
         setAge("");
+        setPassword("");
       })
       .catch((e) => {
         console.log(e);
@@ -45,6 +48,7 @@ const App = () => {
     <>
       <div className="app">
         <div className="form">
+          <h1>Learning Backend</h1>
           <input
             type="text"
             placeholder="Enter your name"
@@ -67,6 +71,14 @@ const App = () => {
             value={age}
             onChange={(e) => {
               setAge(e.target.value);
+            }}
+          />
+          <input
+            type="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
             }}
           />
           <button onClick={postRes}>SUBMIT</button>

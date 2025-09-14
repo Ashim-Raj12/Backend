@@ -53,6 +53,8 @@ import cors from "cors";
 dotenv.config();
 
 const app = express();
+
+let password = "123456";
 ```
 
 ### Key Concepts:
@@ -60,6 +62,7 @@ const app = express();
 1. **ES6 Imports**: `import express from "express";` - Modern JavaScript way to include modules
 2. **dotenv**: Loads environment variables from a `.env` file
 3. **Express App**: `const app = express();` creates the main application instance
+4. **Password Variable**: Simple authentication mechanism
 
 ### Dependencies (from package.json):
 - `express`: Web framework for Node.js
@@ -117,15 +120,14 @@ app.get("/", (req, res) => {
 ### POST Request
 ```javascript
 app.post("/", (req, res) => {
-  console.log(req.body);
-  res.send({ success: true, data: req.body });
+  res.send(req.body);
 });
 ```
 
 - **Route**: `"/"` (same path, different method)
 - **Method**: POST (send data)
-- **Body**: Contains form data from frontend
-- **Response**: Confirms success and echoes back the data
+- **Body**: Contains form data from frontend including password for authentication
+- **Response**: Echoes back the received data
 
 ## Middleware in Express
 
@@ -149,6 +151,25 @@ app.use(express.json());
 - Parses incoming JSON data in request bodies
 - Makes `req.body` available in POST routes
 
+### Custom Authentication Middleware
+```javascript
+app.use((req, res, next) => {
+  if (req.method === "GET") {
+    return next(); // allow GET without password
+  }
+  if (req.body.password == password) {
+    next();
+  } else {
+    res.status(401).send("Unauthorized");
+  }
+});
+```
+
+- Checks if the request method is GET; if so, allows it without authentication
+- For other methods (like POST), verifies the password in the request body
+- If password matches "123456", proceeds to the route handler
+- If not, sends a 401 Unauthorized response
+
 ## Connecting Frontend and Backend
 
 The frontend uses Axios to make HTTP requests:
@@ -158,9 +179,9 @@ The frontend uses Axios to make HTTP requests:
 const getRes = async () => {
   axios.get("http://localhost:8000")  // Note: URL mismatch in code
     .then((e) => {
-      console.log(`Name: ${e.data.name}`);
-      console.log(`Age: ${e.data.age}`);
-      console.log(`Skills: ${e.data.skills}`);
+      console.log(`Name  ${e.data.name}`);
+      console.log(`Age  ${e.data.age}`);
+      console.log(`Skills  ${e.data.skills}`);
     })
     .catch((e) => console.log(e));
 };
@@ -170,13 +191,14 @@ const postRes = async () => {
     userName,
     email,
     age,
+    password,
   })
   .then((e) => {
     console.log(e.data);
-    // Clear form
     setUserName("");
     setEmail("");
     setAge("");
+    setPassword("");
   })
   .catch((e) => console.log(e));
 };
